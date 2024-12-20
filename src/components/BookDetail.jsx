@@ -1,11 +1,13 @@
-import { useState } from "react";
 import StarRating from "./StarRating";
 
-function BookDetail({ selectedBook, handleAddBook }) {
-  const [rating, setRating] = useState(0);
-
-  if (!selectedBook) return <div>Select a book</div>;
-
+function BookDetail({
+  selectedBook,
+  handleAddBook,
+  handleCloseBook,
+  watchedBooks,
+  rating,
+  setRating,
+}) {
   const { volumeInfo } = selectedBook;
   const {
     title,
@@ -32,8 +34,15 @@ function BookDetail({ selectedBook, handleAddBook }) {
     handleAddBook(watchedBook);
   };
 
+  const isAlreadyWatched = watchedBooks.some(
+    (book) => book.id === selectedBook.id
+  );
+
+  const ratingBook = watchedBooks.find((book) => book.id === selectedBook.id);
+
   return (
     <div>
+      <button onClick={handleCloseBook}> &larr;</button>
       <h3>{title}</h3>
       <p>
         <strong>Authors:</strong> {authors?.join(", ")}
@@ -62,10 +71,17 @@ function BookDetail({ selectedBook, handleAddBook }) {
       <p>
         <strong>Language:</strong> {language}
       </p>
-      <StarRating rating={rating} setRating={setRating} />
-      <div className="addBook" onClick={handleAdd}>
-        + Add to list
-      </div>
+      <StarRating
+        rating={ratingBook ? ratingBook.rating : rating}
+        setRating={setRating}
+      />
+      {!isAlreadyWatched ? (
+        <button className="addBook" onClick={handleAdd}>
+          + Add to list
+        </button>
+      ) : (
+        <p>Already in your list</p>
+      )}
     </div>
   );
 }
