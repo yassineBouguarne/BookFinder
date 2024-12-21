@@ -4,13 +4,24 @@ import BooksList from "./components/BooksList";
 import BookDetail from "./components/BookDetail";
 import WatchedBooksList from "./components/WatchedBooksList";
 import Box from "./components/Box";
+import Loading from "./components/Loading";
+import Error from "./components/Error";
 
 function App() {
   const [query, setQuery] = useState("");
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [watchedBooks, setWatchedBooks] = useState([]);
+  const [watchedBooks, setWatchedBooks] = useState(() => {
+    const storedBooks = localStorage.getItem("watchedBooks");
+    return storedBooks ? JSON.parse(storedBooks) : [];
+  });
   const [rating, setRating] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("watchedBooks", JSON.stringify(watchedBooks));
+  }, [watchedBooks]);
 
   const handleSelectedBook = (id) => {
     const book = books.find((book) => book.id === id);
@@ -31,30 +42,45 @@ function App() {
 
   const apiKey = "AIzaSyBpgpiMzJEcw2N_9YpY4H86fVUrsgybPAE";
   useEffect(() => {
+    const controller = new AbortController();
     const fetchBooks = async () => {
       try {
+        setIsLoaded(true);
+        setError("");
         const res = await fetch(
-          `https://www.googleapis.com/books/v1/volumes?q=${query}:keyes&key=${apiKey}`
+          `https://www.googleapis.com/books/v1/volumes?q=${query}:keyes&key=${apiKey}`,
+          { signal: controller.signal }
         );
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
-        }
+        if (!res.ok) throw new Error("Network response was not ok");
+
         const data = await res.json();
-        if (data.Response === "False") {
-          throw new Error("Book not found");
-        }
+        if (data.Response === "False") throw new Error("Book not found");
+
         setBooks(data.items || []);
+        setError("");
       } catch (err) {
-        console.error(err.message);
+        if (err.name !== "AbortError") {
+          console.error(err.message);
+          setError(err.message);
+        }
+      } finally {
+        setIsLoaded(false);
       }
     };
     fetchBooks();
+    handleCloseBook();
+
+    return () => controller.abort();
   }, [query]);
 
   return (
     <>
       <Header query={query} setQuery={setQuery} numberBooks={books.length} />
-      <BooksList books={books} handleSelectedBook={handleSelectedBook} />
+      {isLoaded && <Loading />}
+      {!isLoaded && !error && (
+        <BooksList books={books} handleSelectedBook={handleSelectedBook} />
+      )}
+      {error && <Error message={error} />}
       <hr /> <hr />
       {selectedBook ? (
         <Box>

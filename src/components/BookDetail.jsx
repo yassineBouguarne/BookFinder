@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import StarRating from "./StarRating";
 
 function BookDetail({
@@ -20,6 +21,12 @@ function BookDetail({
     categories,
     language,
   } = volumeInfo;
+
+  useEffect(() => {
+    if (!title) return;
+    document.title = title;
+    return () => (document.title = "useBook");
+  }, [title]);
 
   const handleAdd = () => {
     const watchedBook = {
