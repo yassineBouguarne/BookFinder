@@ -1,8 +1,10 @@
+import { BookCard } from "../styles/Book.styled";
+
 function Book({ book, handleSelectedBook }) {
   const { volumeInfo } = book;
   const { title, imageLinks, authors } = volumeInfo;
   return (
-    <div onClick={() => handleSelectedBook(book.id)}>
+    <BookCard onClick={() => handleSelectedBook(book.id)}>
       {imageLinks?.smallThumbnail ? (
         <img src={imageLinks.smallThumbnail} alt={title} />
       ) : (
@@ -11,9 +13,11 @@ function Book({ book, handleSelectedBook }) {
           alt="Image note available"
         />
       )}
-      <h2>{title}</h2>
-      <p>{authors?.join(", ")}</p>
-    </div>
+      <div>
+        <h2>{title}</h2>
+        <p>{authors?.join(", ") || "Unknown Authors"}</p>
+      </div>
+    </BookCard>
   );
 }
 

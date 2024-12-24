@@ -1,8 +1,9 @@
+import { BookList } from "../styles/BookList.styles";
 import Book from "./Book";
 
 function BooksList({ books, handleSelectedBook }) {
   return (
-    <ul>
+    <BookList>
       {books.map((book) => (
         <Book
           key={book.id}
@@ -10,7 +11,7 @@ function BooksList({ books, handleSelectedBook }) {
           handleSelectedBook={handleSelectedBook}
         />
       ))}
-    </ul>
+    </BookList>
   );
 }
 

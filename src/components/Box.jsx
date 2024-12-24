@@ -1,16 +1,7 @@
-import { useState } from "react";
+import { BoxContainer } from "../styles/Box.styles";
 
 function Box({ children }) {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <div className="box">
-      <button onClick={() => setIsOpen((open) => !open)}>
-        {isOpen ? "-" : "+"}
-      </button>
-      {isOpen && children}
-    </div>
-  );
+  return <BoxContainer>{children}</BoxContainer>;
 }
 
 export default Box;

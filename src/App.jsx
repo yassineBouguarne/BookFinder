@@ -6,9 +6,10 @@ import WatchedBooksList from "./components/WatchedBooksList";
 import Box from "./components/Box";
 import Loading from "./components/Loading";
 import Error from "./components/Error";
+import Main from "./components/Main";
 
 function App() {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("React");
   const [books, setBooks] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
   const [watchedBooks, setWatchedBooks] = useState(() => {
@@ -33,6 +34,7 @@ function App() {
   const handleAddBook = (book) => {
     setWatchedBooks((books) => [...books, book]);
     setRating(0);
+    setSelectedBook(null);
   };
 
   const handleDeleteWatchedBook = (id) =>
@@ -54,7 +56,7 @@ function App() {
         if (!res.ok) throw new Error("Network response was not ok");
 
         const data = await res.json();
-        if (data.Response === "False") throw new Error("Book not found");
+        if (!data.items) throw new Error("Book not found");
 
         setBooks(data.items || []);
         setError("");
@@ -75,32 +77,40 @@ function App() {
 
   return (
     <>
-      <Header query={query} setQuery={setQuery} numberBooks={books.length} />
-      {isLoaded && <Loading />}
-      {!isLoaded && !error && (
-        <BooksList books={books} handleSelectedBook={handleSelectedBook} />
-      )}
-      {error && <Error message={error} />}
-      <hr /> <hr />
-      {selectedBook ? (
+      <Header
+        query={query}
+        setQuery={setQuery}
+        numberBooks={books.length}
+        handleCloseBook={handleCloseBook}
+      />
+      <Main>
         <Box>
-          <BookDetail
-            selectedBook={selectedBook}
-            handleAddBook={handleAddBook}
-            handleCloseBook={handleCloseBook}
-            watchedBooks={watchedBooks}
-            rating={rating}
-            setRating={setRating}
-          />
+          {isLoaded && <Loading />}
+          {!isLoaded && !error && (
+            <BooksList books={books} handleSelectedBook={handleSelectedBook} />
+          )}
+          {error && <Error message={error} />}
         </Box>
-      ) : (
-        <Box>
-          <WatchedBooksList
-            watchedBooks={watchedBooks}
-            onDeletWatched={handleDeleteWatchedBook}
-          />
-        </Box>
-      )}
+        {selectedBook ? (
+          <Box>
+            <BookDetail
+              selectedBook={selectedBook}
+              handleAddBook={handleAddBook}
+              handleCloseBook={handleCloseBook}
+              watchedBooks={watchedBooks}
+              rating={rating}
+              setRating={setRating}
+            />
+          </Box>
+        ) : (
+          <Box>
+            <WatchedBooksList
+              watchedBooks={watchedBooks}
+              onDeletWatched={handleDeleteWatchedBook}
+            />
+          </Box>
+        )}
+      </Main>
     </>
   );
 }

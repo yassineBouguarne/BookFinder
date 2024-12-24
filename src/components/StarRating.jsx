@@ -12,10 +12,14 @@ function StarRating({ rating, setRating }) {
     marginRight: "4px",
   };
 
+  const divStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  };
+
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "start" }}
-    >
+    <div style={divStyle}>
       <div style={{ display: "flex" }}>
         {Array.from({ length: 5 }, (_, i) => (
           <span
@@ -51,7 +55,7 @@ function StarRating({ rating, setRating }) {
           </span>
         ))}
       </div>
-      <p style={{ margin: "8px 0", fontSize: "16px", color: "#333" }}>
+      <p style={{ fontSize: "1rem", fontWeight: "500", color: "#555" }}>
         {tempRating || rating || ""}
       </p>
     </div>

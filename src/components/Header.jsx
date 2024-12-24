@@ -1,11 +1,19 @@
-function Header({ query, setQuery, numberBooks }) {
+import { useEffect, useRef } from "react";
+import { HeaderContainer, Input, Logo } from "../styles/Header.styles";
+
+function Header({ query, setQuery, numberBooks, handleCloseBook }) {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
   return (
-    <header>
-      <div className="logo">
-        <a href="/">useBook</a>
-      </div>
+    <HeaderContainer>
+      <Logo onClick={handleCloseBook}>BookFinder</Logo>
       <div>
-        <input
+        <Input
+          ref={inputRef}
           type="text"
           className="search"
           placeholder="Search books..."
@@ -16,7 +24,7 @@ function Header({ query, setQuery, numberBooks }) {
       <div className="length-results">
         <p className="num-results">Found {numberBooks} results</p>
       </div>
-    </header>
+    </HeaderContainer>
   );
 }
 

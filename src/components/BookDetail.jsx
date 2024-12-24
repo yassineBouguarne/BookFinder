@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { BookDetailWrapper } from "../styles/BookDetail.styled";
 import StarRating from "./StarRating";
 
 function BookDetail({
@@ -22,12 +22,6 @@ function BookDetail({
     language,
   } = volumeInfo;
 
-  useEffect(() => {
-    if (!title) return;
-    document.title = title;
-    return () => (document.title = "useBook");
-  }, [title]);
-
   const handleAdd = () => {
     const watchedBook = {
       id: selectedBook.id,
@@ -48,8 +42,8 @@ function BookDetail({
   const ratingBook = watchedBooks.find((book) => book.id === selectedBook.id);
 
   return (
-    <div>
-      <button onClick={handleCloseBook}> &larr;</button>
+    <BookDetailWrapper>
+      <button onClick={handleCloseBook}>&larr; Back</button>
       <h3>{title}</h3>
       <p>
         <strong>Authors:</strong> {authors?.join(", ")}
@@ -64,7 +58,7 @@ function BookDetail({
       />
       <p>{description}</p>
       <p>
-        <strong>Publisher:</strong> {publisher}
+        <strong>Publisher:</strong> {publisher || "Unknown Publisher"}
       </p>
       <p>
         <strong>Published Date:</strong> {publishedDate}
@@ -87,9 +81,9 @@ function BookDetail({
           + Add to list
         </button>
       ) : (
-        <p>Already in your list</p>
+        <p className="alreadyWatched">Already in your list</p>
       )}
-    </div>
+    </BookDetailWrapper>
   );
 }
 
