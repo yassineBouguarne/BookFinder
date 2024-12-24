@@ -8,7 +8,6 @@ BookFinder est une application web développée avec React et Vite. Elle permet 
 - **Détails des livres** : Consultez des informations détaillées sur chaque livre.
 - **Liste de surveillance** : Ajoutez des livres à une liste de surveillance stockée localement dans le navigateur.
 - **Évaluations par étoiles** : Évaluez les livres grâce à un système de notation par étoiles.
-- **Design réactif** : Conception entièrement réactive pour tous les types d'appareils.
 - **Gestion des erreurs** : Gestion robuste des erreurs et retours utilisateur.
 
 ---
